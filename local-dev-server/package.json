@@ -1,0 +1,16 @@
+{
+  "name": "parley-local-dev-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simple Express info website for testing the Parley Chat widget (built bundle or live Vite dev server).",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^4.22.3"
+  }
+}

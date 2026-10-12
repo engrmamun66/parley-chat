@@ -2,8 +2,7 @@
 .DS_Store
 
 # Mirrored roadmap site
-roadmap-html/
-local-dev-server/
+roadmap-html/ 
 
 # Dependencies & build
 node_modules/

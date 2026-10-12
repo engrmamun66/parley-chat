@@ -19,7 +19,7 @@ export function createStore(cfg, adapter) {
     ready: false,
     error: null,
     connected: false,    // true while the WebSocket is up (polling paused)
-    open: false,
+    open: !!savedUi.open, // survive page reloads (navigation, dev full-reloads)
     view: savedUi.view || 'home',
     param: savedUi.param ?? null,
     from: savedUi.from || null,

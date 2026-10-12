@@ -33,7 +33,9 @@ Which widget the pages load is set by `WIDGET_SOURCE` in `local-dev-server/.env`
 | `dist` | `dist/parley-live-chat.js` | checking the real build: run `npm run build` first |
 
 The badge in the site header shows which one is active (`widget: dev` / `widget: dist`). Each page also has a small "Widget test" bar with buttons for the JS API.
-You can start the site from the project root too: `npm run site` / `npm run site:dev`.
+From the project root, `npm run site:dev` starts **both** Vite and the site (recommended for live testing); `npm run site` starts only the site.
+
+Edits to `.vue` files hot-swap in place. Edits to plain `.js` files (store, constants, adapters) or `widget.css` reload the page; the widget keeps its open/closed state and current screen across the reload. If a page was loaded while Vite was down (badge says `dist`), refresh it once Vite is up.
 
 ## Environment
 

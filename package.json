@@ -9,13 +9,14 @@
     "build": "vite build",
     "preview": "vite preview",
     "site": "npm --prefix local-dev-server start",
-    "site:dev": "npm --prefix local-dev-server run dev"
+    "site:dev": "concurrently -k -n vite,site -c green,blue \"vite\" \"npm --prefix local-dev-server run dev\""
   },
   "dependencies": {
     "vue": "^3.5.43"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
+    "concurrently": "^9.2.5",
     "vite": "^6.4.4"
   }
 }

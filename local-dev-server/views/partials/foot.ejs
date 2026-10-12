@@ -1,0 +1,15 @@
+    <section class="test-bar wrap">
+      <b>Widget test</b>
+      <button onclick="Parley('show')">Open</button>
+      <button onclick="Parley('showNewMessage', 'Hi! I have a question.')">New message</button>
+      <button onclick="Parley('showTicketForm', { category: 'Order issue' })">New ticket</button>
+      <button onclick="Parley('proactive', { text: 'Need a hand? Ask us anything.', delayMs: 0 })">Proactive</button>
+      <button onclick="Parley('identify', { name: 'Sofia Rossi', email: 'sofia@example.com' })">Identify</button>
+      <button onclick="Parley('reset')">Reset</button>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">© <%= new Date().getFullYear() %> <%= parley.businessName %> · Test site for Parley Chat</div>
+  </footer>
+</body>
+</html>

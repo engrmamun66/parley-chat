@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> — <%= parley.businessName %></title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Ccircle cx=%2720%27 cy=%2720%27 r=%2720%27 fill=%27%231F5C45%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+    window.ParleySettings = {
+      publicKey: <%- JSON.stringify(parley.publicKey) %>,
+      businessName: <%- JSON.stringify(parley.businessName) %>,
+      brandColor: <%- JSON.stringify(parley.brandColor) %>,
+      page: { type: <%- JSON.stringify(pageType) %>, title: document.title, path: location.pathname }
+    };
+  </script>
+  <% widget.scripts.forEach(function (src) { %>
+  <script <%- widget.module ? 'type="module"' : 'defer' %> src="<%= src %>"></script>
+  <% }) %>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/"><%= parley.businessName %></a>
+      <nav>
+        <a href="/" class="<%= path === '/' ? 'on' : '' %>">Home</a>
+        <a href="/about-us" class="<%= path === '/about-us' ? 'on' : '' %>">About us</a>
+        <a href="/contact-us" class="<%= path === '/contact-us' ? 'on' : '' %>">Contact us</a>
+      </nav>
+      <span class="mode mode-<%= widget.mode %>" title="Where the chat widget is loaded from">widget: <%= widget.mode %></span>
+    </div>
+  </header>
+  <main class="page">
