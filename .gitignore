@@ -3,3 +3,14 @@
 
 # Mirrored roadmap site
 roadmap-html/
+
+# Dependencies & build
+node_modules/
+dist/
+
+# Env
+.env
+.env.*.local
+
+# Playwright MCP scratch
+.playwright-mcp/
