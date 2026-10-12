@@ -9,11 +9,31 @@ The UI is a port of the reference widget in `roadmap-html/…/parley/ecomm/` (Ho
 ```bash
 npm install
 cp .env.example .env     # set VITE_API_BASE_URL / VITE_SOCKET_URL (or leave empty for demo mode)
-npm run dev              # playground at http://localhost:5173 (index.html)
+npm run dev              # Vite dev server on :5173 (serves src/ for live testing)
 npm run build            # → dist/parley-live-chat.js
 ```
 
-`demo/index.html` loads the built bundle. Serve the repo root, e.g. with VS Code Live Server: `http://127.0.0.1:5500/demo/index.html`.
+## Local test site (`local-dev-server/`)
+
+A small Express website (Home, About us, Contact us; every page is at least 150vh tall) that loads the widget, so you can test it on real pages. It has its own `package.json` and `.env`.
+
+```bash
+cd local-dev-server
+npm install
+cp .env.example .env
+npm run dev              # http://localhost:3000  (node --watch, restarts on server changes)
+```
+
+Which widget the pages load is set by `WIDGET_SOURCE` in `local-dev-server/.env`:
+
+| Value | Loads | Use when |
+|---|---|---|
+| `auto` (default) | the Vite dev server if it's running, otherwise the built bundle | normal work |
+| `dev` | `http://localhost:5173/src/main.js` (`VITE_DEV_URL`) | testing changes live: run `npm run dev` in the project root and edits to `.vue` files hot-reload in the page |
+| `dist` | `dist/parley-live-chat.js` | checking the real build: run `npm run build` first |
+
+The badge in the site header shows which one is active (`widget: dev` / `widget: dist`). Each page also has a small "Widget test" bar with buttons for the JS API.
+You can start the site from the project root too: `npm run site` / `npm run site:dev`.
 
 ## Environment
 
@@ -50,7 +70,6 @@ These are baked in at build time. A host page can override both at runtime (see 
 ```
 
 Settings can also be passed as `data-*` attributes on the script tag (`data-public-key`, `data-api-base-url`, `data-socket-url`, `data-business-name`, `data-brand-color`).
-`window.LLChatSettings` is accepted as an alias, so the reference store pages work unchanged.
 
 ## JavaScript API
 
@@ -74,8 +93,6 @@ To queue calls before the script loads:
 ```js
 window.Parley = window.Parley || function () { (Parley.q = Parley.q || []).push(arguments); };
 ```
-
-`window.LLChat` and `window.LLWidget` are also set (unless the page already defines them), for drop-in compatibility with the demo widget.
 
 ## Project layout
 

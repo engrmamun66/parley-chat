@@ -35,7 +35,6 @@ export function createStore(cfg, adapter) {
     typingAgent: null,
     local: freshLocal(null), // widget-only state: read marker, system lines, csat, votes…
     pendingFiles: [],
-    sending: false,
     pop: null,
     toast: null,
     composerPrefill: null
@@ -415,9 +414,9 @@ export function createStore(cfg, adapter) {
   return {
     state,
     agentCount, visitorCount, unread, assignee, timeline, lastMessage, ticketList, openTickets,
-    go, back, openPanel, closePanel, toggle, markRead, toast, showPop, acceptPop, dismissPop, proactive,
-    boot, startRealtime, stopRealtime, applyEvent, poll,
-    sendMessage, retryMessage, visitorTyping, addFile, removeFile, rate, identify, refreshHistory,
-    refreshTickets, loadTicket, createTicket, replyTicket, searchArticles, vote, ticketPrefillFromChat, reset
+    go, back, openPanel, closePanel, toggle, markRead, toast, acceptPop, dismissPop, proactive,
+    boot, startRealtime, applyEvent,
+    sendMessage, retryMessage, visitorTyping, addFile, removeFile, rate, identify,
+    loadTicket, createTicket, replyTicket, searchArticles, vote, ticketPrefillFromChat, reset
   };
 }

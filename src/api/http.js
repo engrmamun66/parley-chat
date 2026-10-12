@@ -1,5 +1,5 @@
 /** Tiny fetch wrapper: base URL, auth headers, JSON in/out, FormData passthrough. */
-export class HttpError extends Error {
+class HttpError extends Error {
   constructor(status, body) { super((body && body.message) || 'Request failed (' + status + ')'); this.status = status; this.body = body; }
 }
 
@@ -27,8 +27,6 @@ export function createHttp({ baseUrl, publicKey, getVisitorId }) {
   }
   return {
     get: (p, query) => request('GET', p, undefined, { query }),
-    post: (p, d, o) => request('POST', p, d, o),
-    put: (p, d) => request('PUT', p, d),
-    del: (p) => request('DELETE', p)
+    post: (p, d, o) => request('POST', p, d, o)
   };
 }

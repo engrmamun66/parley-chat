@@ -3,6 +3,7 @@
 
 # Mirrored roadmap site
 roadmap-html/
+local-dev-server/
 
 # Dependencies & build
 node_modules/

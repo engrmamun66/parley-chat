@@ -63,12 +63,9 @@ import { createLocalAdapter } from './adapters/local.js';
   }
 
   // Calls made before the script loaded: window.Parley = window.Parley || function(){ (Parley.q = Parley.q || []).push(arguments) }
-  const queued = [].concat((window.Parley && window.Parley.q) || [], (window.LLChat && window.LLChat.q) || []);
+  const queued = (window.Parley && window.Parley.q) || [];
   window.Parley = Parley;
   window.ParleyChat = API;
-  // Drop-in compatibility with pages written against the Leaping Logic demo widget.
-  if (!window.LLChat || window.LLChat.q) window.LLChat = Parley;
-  if (!window.LLWidget) window.LLWidget = API;
 
   watch(() => store.unread.value, (n) => unreadFns.forEach((fn) => { try { fn(n); } catch (e) { /* ignore */ } }));
 

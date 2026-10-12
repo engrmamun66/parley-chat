@@ -7,6 +7,8 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 // Library build: one self-contained IIFE (Vue + CSS inlined) → dist/parley-live-chat.js
 export default defineConfig({
   plugins: [vue()],
+  // local-dev-server loads /src/main.js from here (VITE_DEV_URL), so keep the port fixed.
+  server: { port: 5173, strictPort: true },
   define: {
     __PARLEY_VERSION__: JSON.stringify(pkg.version),
     'process.env.NODE_ENV': JSON.stringify('production'),
