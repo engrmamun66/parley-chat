@@ -32,6 +32,8 @@ Which widget the pages load is set by `WIDGET_SOURCE` in `local-dev-server/.env`
 | `dev` | `http://localhost:5173/src/main.js` (`VITE_DEV_URL`) | testing changes live: run `npm run dev` in the project root and edits to `.vue` files hot-reload in the page |
 | `dist` | `dist/parley-live-chat.js` | checking the real build: run `npm run build` first |
 
+Every page also loads `local-dev-server/public/parley.chat.options.js` (sets `window.LLChatSettings`) before the widget; its values override the `.env` defaults, and edits apply on the next page refresh.
+
 The badge in the site header shows which one is active (`widget: dev` / `widget: dist`). Each page also has a small "Widget test" bar with buttons for the JS API.
 From the project root, `npm run site:dev` starts **both** Vite and the site (recommended for live testing); `npm run site` starts only the site.
 
@@ -70,6 +72,8 @@ These are baked in at build time. A host page can override both at runtime (see 
 </script>
 <script src="https://cdn.example.com/parley-live-chat.js" defer></script>
 ```
+
+`window.LLChatSettings` (the name used by the embed snippet) is read too and wins over `ParleySettings`; a `window.LLChat` queue stub is drained like `Parley`.
 
 Settings can also be passed as `data-*` attributes on the script tag (`data-public-key`, `data-api-base-url`, `data-socket-url`, `data-business-name`, `data-brand-color`).
 

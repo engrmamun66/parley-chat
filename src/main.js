@@ -62,9 +62,10 @@ import { createLocalAdapter } from './adapters/local.js';
     }
   }
 
-  // Calls made before the script loaded: window.Parley = window.Parley || function(){ (Parley.q = Parley.q || []).push(arguments) }
-  const queued = (window.Parley && window.Parley.q) || [];
-  window.Parley = Parley;
+  // Calls made before the script loaded, via a queue stub named Parley or LLChat (embed snippet):
+  //   window.LLChat = function () { LLChat.q.push(arguments) }; LLChat.q = [];
+  const queued = [].concat((window.Parley && window.Parley.q) || [], (window.LLChat && window.LLChat.q) || []);
+  window.Parley = window.LLChat = Parley;
   window.ParleyChat = API;
 
   watch(() => store.unread.value, (n) => unreadFns.forEach((fn) => { try { fn(n); } catch (e) { /* ignore */ } }));

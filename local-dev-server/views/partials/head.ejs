@@ -14,6 +14,8 @@
       page: { type: <%- JSON.stringify(pageType) %>, title: document.title, path: location.pathname }
     };
   </script>
+  <!-- Embed options (window.LLChatSettings) — overrides the defaults above. Edit public/parley.chat.options.js. -->
+  <script src="/parley.chat.options.js?v=<%= Date.now() %>"></script>
   <% widget.scripts.forEach(function (src) { %>
   <script <%- widget.module ? 'type="module"' : 'defer' %> src="<%= src %>"></script>
   <% }) %>

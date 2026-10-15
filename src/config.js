@@ -2,12 +2,13 @@ import { DEFAULT_TEAM } from './constants/content.js';
 
 /**
  * Resolve widget config from (lowest → highest priority):
- *   build-time .env (VITE_API_BASE_URL, VITE_SOCKET_URL)  →  data-* attributes on the <script> tag  →  window.ParleySettings
+ *   build-time .env (VITE_API_BASE_URL, VITE_SOCKET_URL)  →  data-* attributes on the <script> tag  →
+ *   window.ParleySettings  →  window.LLChatSettings (embed-snippet name; wins when both are set)
  */
 export function resolveConfig() {
   const script = document.currentScript || document.querySelector('script[src*="parley-live-chat"]');
   const ds = (script && script.dataset) || {};
-  const win = window.ParleySettings || {};
+  const win = { ...(window.ParleySettings || {}), ...(window.LLChatSettings || {}) };
 
   const apiBaseUrl = String(win.apiBaseUrl || ds.apiBaseUrl || import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
   const socketUrl = String(win.socketUrl || ds.socketUrl || import.meta.env.VITE_SOCKET_URL || '').trim();
