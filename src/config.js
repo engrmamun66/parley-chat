@@ -1,5 +1,5 @@
 import { DEFAULT_TEAM } from './constants/content.js';
-import { normalizeSettings } from './settings.js';
+import { normalizeSettings, DEFAULT_PRIMARY } from './settings.js';
 
 /** One-level-deep merge, so settings.colors from both objects combine instead of replacing. */
 function mergeSettings(a, b) {
@@ -29,7 +29,7 @@ export function resolveConfig() {
 
   const replyTimeText = win.replyTimeText || 'We typically reply in under 5 minutes';
   const ui = normalizeSettings(mergeSettings(a.settings, b.settings), {
-    brandColor: /^#[0-9a-f]{3,8}$/i.test(brand || '') ? brand : '#1F5C45',
+    brandColor: /^#[0-9a-f]{3,8}$/i.test(brand || '') ? brand : DEFAULT_PRIMARY,
     replyTimeText, launcherLabel: win.launcherLabel, zIndex: win.zIndex
   });
 

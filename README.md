@@ -96,7 +96,7 @@ Controls how the chat icon and chat box look and behave. Pass them as `settings`
 | `mobile_fullscreen` | `true` | Chat box fills the screen at ≤ 480px wide |
 | `opening_animation` | `'default'` | `default` · `fade` · `zoom` · `pop` · `slide_up` · `slide_down` · `slide_left` · `slide_right`. Closing plays the reverse. |
 | `animation_duration` | `280` | ms |
-| `colors.primary` | `brandColor` | Any CSS color (name, hex, rgb, hsl) |
+| `colors.primary` | `#1F5C45` | Any CSS color (name, hex, rgb, hsl). `brandColor` also sets it. |
 | `colors.primary_bg` | `'#ffffff'` | Chat box background |
 | `colors.on_primary` | `'auto'` | Text/icon color on primary. `auto` picks dark or white for contrast. |
 | `colors.text` | `'#071437'` | Main text color |

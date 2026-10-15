@@ -3,6 +3,9 @@
  * (or window.ParleySettings.settings). Every key is optional; bad values fall back to the default
  * with a console warning. Full reference: README.md → "Display settings".
  */
+/** Codebase default brand color — used when neither colors.primary nor brandColor is set. */
+export const DEFAULT_PRIMARY = '#1F5C45';
+
 export const POSITIONS = ['bottom_right', 'bottom_left', 'top_right', 'top_left'];
 export const ANIMATIONS = ['default', 'fade', 'zoom', 'pop', 'slide_up', 'slide_down', 'slide_left', 'slide_right'];
 export const SECTIONS = ['messages', 'help', 'tickets'];
@@ -27,7 +30,7 @@ export const DEFAULT_SETTINGS = {
   opening_animation: 'default',  // see ANIMATIONS; closing always plays the reverse
   animation_duration: 280,       // ms
   colors: {
-    primary: null,               // any CSS color — buttons, icon, header, own bubbles (default: brandColor)
+    primary: DEFAULT_PRIMARY,    // any CSS color — buttons, icon, header, own bubbles (brandColor also sets it)
     primary_bg: '#ffffff',       // chat box background
     on_primary: 'auto',          // text/icon color on primary; 'auto' picks black or white for contrast
     text: '#071437'              // main text color
@@ -111,7 +114,7 @@ export function normalizeSettings(raw, { brandColor, replyTimeText, launcherLabe
     opening_animation: oneOf('opening_animation', r.opening_animation, ANIMATIONS, D.opening_animation),
     animation_duration: num('animation_duration', r.animation_duration, D.animation_duration, 0, 2000),
     colors: {
-      primary: color('colors.primary', col.primary, brandColor || '#1F5C45'),
+      primary: color('colors.primary', col.primary, brandColor || D.colors.primary),
       primary_bg: color('colors.primary_bg', col.primary_bg, D.colors.primary_bg),
       on_primary: col.on_primary == null || col.on_primary === 'auto' ? 'auto' : color('colors.on_primary', col.on_primary, 'auto'),
       text: color('colors.text', col.text, D.colors.text)

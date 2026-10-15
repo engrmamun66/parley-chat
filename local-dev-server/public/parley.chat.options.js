@@ -24,7 +24,7 @@ window.LLChatSettings = {
         opening_animation: 'default',
         animation_duration: 280, // ms
         colors: {
-            primary: 'yellow', // any CSS color: name, #hex, rgb(), hsl() …
+            primary: null, // null → codebase default (#1F5C45). Any CSS color: name, #hex, rgb(), hsl() …
             primary_bg: 'white', // chatbox background
             on_primary: 'auto', // text/icon color on primary; 'auto' picks dark or white for readability
             text: '#071437', // main text color
