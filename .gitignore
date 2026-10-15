@@ -14,3 +14,4 @@ dist/
 
 # Playwright MCP scratch
 .playwright-mcp/
+personal-doc.md
