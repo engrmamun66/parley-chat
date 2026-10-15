@@ -48,7 +48,7 @@ window.LLChatSettings = {
             reply_time: 'We typically reply in under 5 minutes',
         },
         open_proxy: {
-            element: null, // '#element_id' | any CSS selector | HTMLElement — clicking it opens the chat
+            element: null, // '#element_id' | '#open_chat' | any CSS selector | HTMLElement — clicking it opens the chat
             mode: 'open', // open | toggle (open-close)
             target: '_self', // _self | _blank (used with url)
             /**
