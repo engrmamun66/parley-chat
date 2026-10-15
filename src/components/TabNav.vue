@@ -1,13 +1,15 @@
 <script setup>
+import { computed } from 'vue';
 import Icon from './Icon.vue';
 import { useStore } from '../store/index.js';
 defineProps({ active: String });
 const store = useStore();
-const TABS = [['home', 'Home', 'home'], ['messages', 'Messages', 'msgs'], ['help', 'Help', 'help'], ['tickets', 'Tickets', 'ticket']];
+const ALL = [['home', 'Home', 'home'], ['messages', 'Messages', 'msgs'], ['help', 'Help', 'help'], ['tickets', 'Tickets', 'ticket']];
+const TABS = computed(() => ALL.filter(([id]) => store.allowed(id)));
 </script>
 
 <template>
-  <nav class="tabs" aria-label="Messenger sections">
+  <nav v-if="TABS.length > 1" class="tabs" aria-label="Messenger sections" :style="{ gridTemplateColumns: 'repeat(' + TABS.length + ', 1fr)' }">
     <button v-for="[id, label, icon] in TABS" :key="id" class="tab" type="button"
       :aria-current="active === id ? 'page' : null" @click="store.go(id)">
       <Icon :name="icon" :size="22" />

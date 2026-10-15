@@ -50,7 +50,7 @@ const clear = (k) => { if (errors[k]) delete errors[k]; };
       <form ref="form" class="form" novalidate @submit.prevent="submit">
         <div class="note"><span class="ic"><Icon name="clock" :size="16" /></span>
           <span>Tickets get a reference number and are tracked until they're resolved. For a quick question,
-            <button type="button" style="color:var(--b);font-weight:600" @click="store.go('chat', 'live')">chat with us</button> instead.</span></div>
+            <button type="button" style="color:var(--b-ink);font-weight:600" @click="store.go('chat', 'live')">chat with us</button> instead.</span></div>
 
         <div class="field"><label for="pf-cat">Category</label>
           <select id="pf-cat" v-model="f.category" class="inp" :class="{ err: errors.category }" data-f="category" required @change="clear('category')">

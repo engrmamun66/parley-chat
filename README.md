@@ -77,12 +77,52 @@ These are baked in at build time. A host page can override both at runtime (see 
 
 Settings can also be passed as `data-*` attributes on the script tag (`data-public-key`, `data-api-base-url`, `data-socket-url`, `data-business-name`, `data-brand-color`).
 
+## Display settings
+
+Controls how the chat icon and chat box look and behave. Pass them as `settings` inside `window.LLChatSettings` (or `window.ParleySettings`). Every key is optional. An invalid value logs a console warning and falls back to the default. Full annotated example: [local-dev-server/public/parley.chat.options.js](local-dev-server/public/parley.chat.options.js).
+
+| Key | Default | Values |
+|---|---|---|
+| `display_in` | `'body'` | `'body'`, `'#element_id'`, or an HTMLElement. Inside an element, the widget is positioned within that element. |
+| `chat_icon` | `true` | Show the round launcher. `false` → open only via the API or `open_proxy`. |
+| `chat_icon_size` | `56` | px (32–96) |
+| `chat_icon_label` | `null` | Text bubble next to the icon |
+| `unread_badge` | `true` | Unread counter on the icon |
+| `fullscreen_icon` | `true` | Expand/collapse button before the close button |
+| `chatbox_position.position` | `'bottom_right'` | `bottom_right` · `bottom_left` · `top_right` · `top_left` |
+| `chatbox_position.adjust_x` / `adjust_y` | `0` | px, negative allowed. `+x` moves right, `+y` moves down. |
+| `width` / `height` | `380` / `640` | px, capped to the screen or container |
+| `border_radius` | `16` | px |
+| `mobile_fullscreen` | `true` | Chat box fills the screen at ≤ 480px wide |
+| `opening_animation` | `'default'` | `default` · `fade` · `zoom` · `pop` · `slide_up` · `slide_down` · `slide_left` · `slide_right`. Closing plays the reverse. |
+| `animation_duration` | `280` | ms |
+| `colors.primary` | `brandColor` | Any CSS color (name, hex, rgb, hsl) |
+| `colors.primary_bg` | `'#ffffff'` | Chat box background |
+| `colors.on_primary` | `'auto'` | Text/icon color on primary. `auto` picks dark or white for contrast. |
+| `colors.text` | `'#071437'` | Main text color |
+| `font_family` | `null` | e.g. `'Poppins, sans-serif'` (the page must load the font) |
+| `z_index` | `2147483647` | |
+| `start_view` | `'home'` | `home` · `chat` · `messages` · `help` · `tickets` |
+| `sections` | all `true` | `{ messages, help, tickets }` set to `false` hides that tab and its cards |
+| `open_on_load` | `false` | `true`, or a delay in ms |
+| `remember_state` | `true` | Reopen on the same screen after a reload or navigation |
+| `close_on_escape` | `true` | Esc exits full screen first, then closes |
+| `hide_on_paths` | `[]` | e.g. `['/checkout', '/admin/*']` |
+| `texts` | | `greeting`, `greeting_named` (`{name}` placeholder), `tagline`, `reply_time` |
+| `open_proxy.element` | `null` | CSS selector or HTMLElement. Clicking it opens the chat (works for elements added later too). |
+| `open_proxy.mode` | `'open'` | `open` · `toggle` |
+| `open_proxy.url` | `null` | e.g. `'/contact'`. Goes there first and opens the chat on arrival. If already on that page, it just opens. |
+| `open_proxy.target` | `'_self'` | `_self` · `_blank` (used with `url`) |
+
+Primary used as text on the chat box background (active tab, links, icons) is darkened automatically when it would be too faint, e.g. `yellow` on white.
+
 ## JavaScript API
 
 ```js
 Parley('show')                       // open (optionally Parley('show', 'tickets'))
 Parley('hide')
 Parley('toggle')
+Parley('fullscreen', true)          // true | false | omit to toggle
 Parley('showNewMessage', 'Prefilled text')
 Parley('showTicketForm', { category: 'Order issue', orderId: 'HP-10482', subject, body })
 Parley('identify', { name, email })
@@ -105,7 +145,8 @@ window.Parley = window.Parley || function () { (Parley.q = Parley.q || []).push(
 ```
 src/
   main.js              entry: config → adapter → store → Shadow DOM mount → public API
-  config.js            merges .env, script data-attributes and window.ParleySettings
+  config.js            merges .env, script data-attributes, window.ParleySettings / LLChatSettings
+  settings.js          display settings: defaults, validation, helpers
   App.vue              shell: launcher, pop card, panel, view switch
   store/index.js       reactive state, navigation, actions, event reducer (applyEvent), polling
   adapters/

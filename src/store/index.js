@@ -5,6 +5,8 @@ import { createSocket } from '../adapters/socket.js';
 
 const UI_KEY = 'parley-ui', ST_KEY = 'parley-state', VID_KEY = 'parley-visitor';
 const DETAIL = { chat: 1, article: 1, ticket: 1, newTicket: 1, ticketDone: 1 };
+// Screens that belong to an optional section (settings.sections.*).
+const SECTION_OF = { messages: 'messages', help: 'help', article: 'help', tickets: 'tickets', ticket: 'tickets', newTicket: 'tickets', ticketDone: 'tickets' };
 export const StoreKey = Symbol('parley-store');
 export const useStore = () => inject(StoreKey);
 
@@ -13,16 +15,24 @@ export const useStore = () => inject(StoreKey);
  * does I/O; every server-side change — poll result or pushed event — goes through `applyEvent`.
  */
 export function createStore(cfg, adapter) {
-  const savedUi = lsGet(UI_KEY) || {};
+  const ui = cfg.ui;
+  const allowed = (view) => !SECTION_OF[view] || ui.sections[SECTION_OF[view]];
+  const startView = allowed(ui.start_view) ? ui.start_view : 'home';
+  const startParam = startView === 'chat' ? 'live' : null;
+  const savedUi = (ui.remember_state && lsGet(UI_KEY)) || {};
+  const restore = savedUi.view && allowed(savedUi.view);
   const state = reactive({
     cfg,
     ready: false,
     error: null,
     connected: false,    // true while the WebSocket is up (polling paused)
-    open: !!savedUi.open, // survive page reloads (navigation, dev full-reloads)
-    view: savedUi.view || 'home',
-    param: savedUi.param ?? null,
-    from: savedUi.from || null,
+    open: !!savedUi.open,       // settings.remember_state: survive page reloads (navigation, dev full-reloads)
+    fullscreen: !!savedUi.fullscreen,
+    contained: false,           // mounted inside settings.display_in element instead of the page body
+    hidden: false,              // settings.hide_on_paths matched
+    view: restore ? savedUi.view : startView,
+    param: restore ? savedUi.param ?? null : startParam,
+    from: restore ? savedUi.from || null : null,
 
     session: { visitorId: null, conversationId: null, name: null, email: null, status: 'open', assignee: null },
     messages: [],        // live conversation
@@ -43,7 +53,7 @@ export function createStore(cfg, adapter) {
   function freshLocal(convId) {
     return { convId, readAgent: null, extras: [], csat: null, lastStatus: 'open', proactiveSeen: {}, votes: {} };
   }
-  const saveUi = () => lsSet(UI_KEY, { open: state.open, view: state.view, param: state.param, from: state.from });
+  const saveUi = () => { if (ui.remember_state) lsSet(UI_KEY, { open: state.open, fullscreen: state.fullscreen, view: state.view, param: state.param, from: state.from }); };
   const saveLocal = () => lsSet(ST_KEY, state.local);
 
   /* ------------------------------------------------------------ getters */
@@ -71,6 +81,7 @@ export function createStore(cfg, adapter) {
 
   /* ------------------------------------------------------------ navigation */
   function go(view, param = null) {
+    if (!allowed(view)) { view = 'home'; param = null; }
     if (DETAIL[view] && !DETAIL[state.view] && state.view !== view) state.from = state.view;
     state.view = view; state.param = param;
     if (view === 'chat' && param && param !== 'live') loadPast(param);
@@ -94,6 +105,7 @@ export function createStore(cfg, adapter) {
     saveUi();
   }
   function closePanel() { state.open = false; saveUi(); }
+  function toggleFullscreen(on) { state.fullscreen = on == null ? !state.fullscreen : !!on; saveUi(); }
   function toggle() { state.open ? closePanel() : openPanel(); }
 
   function markRead() {
@@ -407,14 +419,14 @@ export function createStore(cfg, adapter) {
     stopRealtime();
     if (adapter.reset) adapter.reset();
     [UI_KEY, ST_KEY, VID_KEY].forEach(lsDel);
-    state.open = false; state.view = 'home'; state.param = null; state.messages = []; state.tickets = []; state.history = [];
+    state.open = false; state.fullscreen = false; state.view = startView; state.param = startParam; state.messages = []; state.tickets = []; state.history = [];
     boot().then(startRealtime);
   }
 
   return {
     state,
     agentCount, visitorCount, unread, assignee, timeline, lastMessage, ticketList, openTickets,
-    go, back, openPanel, closePanel, toggle, markRead, toast, acceptPop, dismissPop, proactive,
+    go, back, openPanel, closePanel, toggle, toggleFullscreen, allowed, markRead, toast, acceptPop, dismissPop, proactive,
     boot, startRealtime, applyEvent,
     sendMessage, retryMessage, visitorTyping, addFile, removeFile, rate, identify,
     loadTicket, createTicket, replyTicket, searchArticles, vote, ticketPrefillFromChat, reset

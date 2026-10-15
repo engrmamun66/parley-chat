@@ -76,8 +76,8 @@ defineExpose({ shake });
             <template v-for="(a, k) in r.m.attachments || []" :key="k">
               <br v-if="r.m.body || k">📎 <a v-if="a.url" class="att-link" :href="a.url" target="_blank" rel="noopener noreferrer">{{ a.name }}</a><template v-else>{{ a.name }}</template>
             </template>
-            <template v-if="r.m.action === 'ticket'"><br>
-              <button class="btn sm" type="button" style="background:#fff;color:var(--b);border:1px solid var(--edge)" @click="store.go('newTicket', store.ticketPrefillFromChat())"><Icon name="ticket" :size="15" /> Raise a ticket</button>
+            <template v-if="r.m.action === 'ticket' && store.allowed('tickets')"><br>
+              <button class="btn sm" type="button" style="background:var(--bg);color:var(--b-ink);border:1px solid var(--edge)" @click="store.go('newTicket', store.ticketPrefillFromChat())"><Icon name="ticket" :size="15" /> Raise a ticket</button>
             </template>
           </div>
           <div v-if="r.meta" class="meta" :class="{ seen: r.seen }">

@@ -1,35 +1,63 @@
-  window.LLChatSettings = { 
+window.LLChatSettings = {
     publicKey: "pk_live_hp_8f3a2c91d7e4b6a0",
     settings: {
-        display_in: 'body', // body | #element_id | HTMLElement
-        chat_icon: true, // booean: true | false
-        fullscreen_icon: true, // booean: true | false (show a full screen icon before chatbox close icon)
+        display_in: 'body', // body | #element_id | HTMLElement — inside an element, the chat is positioned within that element
+        chat_icon: true, // boolean: show the round chat icon (launcher). false → open only via API / open_proxy
+        chat_icon_size: 56, // px (32 – 96)
+        chat_icon_label: null, // small text bubble next to the icon, e.g. 'Chat with us'
+        unread_badge: true, // boolean: red unread counter on the chat icon
+        fullscreen_icon: true, // boolean: show a full screen icon before the chatbox close icon
         chatbox_position: {
-            position: 'bottom_right', // bootom_right | bottom_left | top_right | top_left
-            adjust_x: 0, // Able to pass negative value in pixel, will be adjust chatbox-postion left or right
-            adjust_y: 0, // Able to pass negative value in pixel, will be adjust chatbox-postion top or bottom
+            position: 'bottom_right', // bottom_right | bottom_left | top_right | top_left
+            adjust_x: 0, // px, negative allowed: + moves right, − moves left
+            adjust_y: 0, // px, negative allowed: + moves down, − moves up
         },
-        /* 
-        For opening_animation, add 4 to 6 type of opening animation 
-        closing_animation will be automatic always(reverse of opening_animation(e.g. if opening animation is))
-        if chat box open from right to left, will be close left to right
+        width: 380, // chatbox width in px (capped to the screen)
+        height: 640, // chatbox height in px (capped to the screen)
+        border_radius: 16, // px
+        mobile_fullscreen: true, // boolean: chatbox fills the screen on phones (≤ 480px wide)
+        /*
+        opening_animation: default | fade | zoom | pop | slide_up | slide_down | slide_left | slide_right
+        Closing always plays the reverse automatically
+        (e.g. slide_left opens right → left, and closes left → right).
         */
-        opening_animation: 'default', //  add 4 to 6 type of opening animation 
+        opening_animation: 'default',
+        animation_duration: 280, // ms
         colors: {
-            primary: 'yellow', // color name and any type of color code will acceptable
-            primary_bg: 'white',
+            primary: 'yellow', // any CSS color: name, #hex, rgb(), hsl() …
+            primary_bg: 'white', // chatbox background
+            on_primary: 'auto', // text/icon color on primary; 'auto' picks dark or white for readability
+            text: '#071437', // main text color
+        },
+        font_family: null, // e.g. 'Poppins, sans-serif' (font must be loaded by the page)
+        z_index: 2147483647,
+        start_view: 'home', // first screen: home | chat | messages | help | tickets
+        sections: { // hide whole tabs
+            messages: true,
+            help: true,
+            tickets: true,
+        },
+        open_on_load: false, // false | true | delay in ms (e.g. 5000)
+        remember_state: true, // reopen on the same screen after page reload / navigation
+        close_on_escape: true, // Esc exits full screen first, then closes
+        hide_on_paths: [], // e.g. ['/checkout', '/admin/*'] — no chat on these pages
+        texts: {
+            greeting: 'Hi there 👋',
+            greeting_named: 'Hi {name} 👋', // used once the visitor's name is known
+            tagline: 'How can we help?',
+            reply_time: 'We typically reply in under 5 minutes',
         },
         open_proxy: {
-            element: null, // supprted (#elemnt_id | HTMLElement)
+            element: null, // '#element_id' | any CSS selector | HTMLElement — clicking it opens the chat
             mode: 'open', // open | toggle (open-close)
-            target: '_self', // _self | _blank 
+            target: '_self', // _self | _blank (used with url)
             /**
-             * url: support any page slug (e.g. /contact | /support | e.t.c)
-             * after click the element will go the url by reloading page, if current page is matche with url, will not relaod, just open
+             * url: any page slug (e.g. /contact | /support)
+             * On click, goes to the url (page reload) and opens the chat there.
+             * If the current page already matches the url, no reload — just opens.
              */
-            url: null,  // `/contact` | `/support` | e.t.c
-        }, 
-        
+            url: null,
+        },
     }
 };
 //   (function (w, d, s) {
@@ -42,4 +70,4 @@
 //       var x = d.getElementsByTagName(s)[0]; x.parentNode.insertBefore(j, x);
 //     }
 //     d.readyState === "complete" ? load() : w.addEventListener("load", load, false);
-//   })(window, document, "script"); 
+//   })(window, document, "script");

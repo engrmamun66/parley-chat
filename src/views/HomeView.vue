@@ -4,6 +4,7 @@ import Icon from '../components/Icon.vue';
 import Avatar from '../components/Avatar.vue';
 import TeamStack from '../components/TeamStack.vue';
 import TabNav from '../components/TabNav.vue';
+import FullscreenButton from '../components/FullscreenButton.vue';
 import StatusBadge from '../components/StatusBadge.vue';
 import StatusLine from '../components/StatusLine.vue';
 import { ago, firstName } from '../utils/format.js';
@@ -12,6 +13,8 @@ import { useStore } from '../store/index.js';
 const store = useStore();
 const s = store.state;
 const name = computed(() => firstName(s.session.name));
+const t = s.cfg.ui.texts;
+const greeting = computed(() => (name.value ? t.greeting_named.replace('{name}', name.value) : t.greeting));
 const last = computed(() => store.lastMessage.value);
 const lastWho = computed(() => !last.value ? '' : last.value.from === 'visitor' ? 'You' : (last.value.agent || store.assignee.value || s.cfg.businessName));
 const featured = computed(() => s.articles.slice(0, 3));
@@ -28,10 +31,11 @@ function search(e) { const q = e.target.value; if (q.trim()) { store.go('help', 
           <span class="logo" aria-hidden="true">{{ s.cfg.logoText }}</span>
           <span style="display:flex;align-items:center;gap:6px">
             <TeamStack on-brand />
+            <FullscreenButton />
             <button class="iconbtn" type="button" aria-label="Close messenger" @click="store.closePanel()"><Icon name="x" /></button>
           </span>
         </div>
-        <h1>{{ name ? 'Hi ' + name + ' 👋' : 'Hi there 👋' }}<span>How can we help?</span></h1>
+        <h1>{{ greeting }}<span>{{ t.tagline }}</span></h1>
       </div>
 
       <div class="cards">
@@ -58,7 +62,7 @@ function search(e) { const q = e.target.value; if (q.trim()) { store.go('help', 
           </div>
         </button>
 
-        <div class="card">
+        <div v-if="store.allowed('help')" class="card">
           <label class="search"><span><Icon name="search" :size="17" /></span>
             <input type="search" placeholder="Search for help" aria-label="Search for help" @input="search"></label>
           <div class="links">
@@ -68,13 +72,13 @@ function search(e) { const q = e.target.value; if (q.trim()) { store.go('help', 
           </div>
         </div>
 
-        <button class="card" type="button" @click="store.go('newTicket')">
+        <button v-if="store.allowed('tickets')" class="card" type="button" @click="store.go('newTicket')">
           <div class="row"><span class="cta-ic"><Icon name="ticket" /></span>
             <div class="grow"><p class="card-t">Raise a ticket</p><p class="card-s">Order problem, return or billing question? We'll track it for you.</p></div>
             <span class="chev"><Icon name="right" :size="18" /></span></div>
         </button>
 
-        <button class="card" type="button" @click="latestTicket ? store.go('ticket', latestTicket.id) : store.go('tickets')">
+        <button v-if="store.allowed('tickets')" class="card" type="button" @click="latestTicket ? store.go('ticket', latestTicket.id) : store.go('tickets')">
           <div class="row"><span class="cta-ic"><Icon name="box" /></span>
             <div class="grow"><p class="card-t">Track your tickets</p>
               <p v-if="latestTicket" class="card-s ellip">{{ latestTicket.key }} · {{ latestTicket.subject }}</p>
