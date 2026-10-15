@@ -1,5 +1,5 @@
 import { DEFAULT_TEAM } from './constants/content.js';
-import { normalizeSettings, DEFAULT_PRIMARY } from './settings.js';
+import { normalizeSettings, DEFAULT_BRAND } from './settings.js';
 
 /** One-level-deep merge, so settings.colors from both objects combine instead of replacing. */
 function mergeSettings(a, b) {
@@ -29,7 +29,7 @@ export function resolveConfig() {
 
   const replyTimeText = win.replyTimeText || 'We typically reply in under 5 minutes';
   const ui = normalizeSettings(mergeSettings(a.settings, b.settings), {
-    brandColor: /^#[0-9a-f]{3,8}$/i.test(brand || '') ? brand : DEFAULT_PRIMARY,
+    brandColor: /^#[0-9a-f]{3,8}$/i.test(brand || '') ? brand : DEFAULT_BRAND,
     replyTimeText, launcherLabel: win.launcherLabel, zIndex: win.zIndex
   });
 
@@ -39,7 +39,7 @@ export function resolveConfig() {
     mode: apiBaseUrl ? 'api' : 'local',
     publicKey: win.publicKey || ds.publicKey || '',
     pollInterval: Math.max(1500, +(win.pollInterval || 4000)),
-    brandColor: ui.colors.primary,
+    brandColor: ui.colors.brand,
     businessName,
     logoText: win.logoText || businessName.split(/\s*&\s*|\s+/).filter(Boolean).map((w) => w[0].toUpperCase()).join('&').slice(0, 3) || 'P',
     offline: win.offline === true,

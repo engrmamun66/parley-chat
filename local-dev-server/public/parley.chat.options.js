@@ -24,9 +24,9 @@ window.LLChatSettings = {
         opening_animation: 'default',
         animation_duration: 280, // ms
         colors: {
-            primary: null, // null → codebase default (#1F5C45). Any CSS color: name, #hex, rgb(), hsl() …
-            primary_bg: 'white', // chatbox background
-            on_primary: 'auto', // text/icon color on primary; 'auto' picks dark or white for readability
+            brand: null, // null → codebase default (#1F5C45). Any CSS color: name, #hex, rgb(), hsl() …
+            brand_bg: 'white', // chatbox background
+            on_brand: 'auto', // text/icon color on brand; 'auto' picks dark or white for readability
             text: '#071437', // main text color
         },
         font_family: null, // e.g. 'Poppins, sans-serif' (font must be loaded by the page)

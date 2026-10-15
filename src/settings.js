@@ -3,8 +3,8 @@
  * (or window.ParleySettings.settings). Every key is optional; bad values fall back to the default
  * with a console warning. Full reference: README.md → "Display settings".
  */
-/** Codebase default brand color — used when neither colors.primary nor brandColor is set. */
-export const DEFAULT_PRIMARY = '#1F5C45';
+/** Codebase default brand color — used when neither colors.brand nor brandColor is set. */
+export const DEFAULT_BRAND = '#1F5C45';
 
 export const POSITIONS = ['bottom_right', 'bottom_left', 'top_right', 'top_left'];
 export const ANIMATIONS = ['default', 'fade', 'zoom', 'pop', 'slide_up', 'slide_down', 'slide_left', 'slide_right'];
@@ -30,9 +30,9 @@ export const DEFAULT_SETTINGS = {
   opening_animation: 'default',  // see ANIMATIONS; closing always plays the reverse
   animation_duration: 280,       // ms
   colors: {
-    primary: DEFAULT_PRIMARY,    // any CSS color — buttons, icon, header, own bubbles (brandColor also sets it)
-    primary_bg: '#ffffff',       // chat box background
-    on_primary: 'auto',          // text/icon color on primary; 'auto' picks black or white for contrast
+    brand: DEFAULT_BRAND,        // any CSS color — buttons, icon, header, own bubbles (brandColor also sets it)
+    brand_bg: '#ffffff',         // chat box background
+    on_brand: 'auto',            // text/icon color on brand; 'auto' picks black or white for contrast
     text: '#071437'              // main text color
   },
   font_family: null,             // e.g. 'Poppins, sans-serif' (font must already be loaded by the page)
@@ -114,9 +114,9 @@ export function normalizeSettings(raw, { brandColor, replyTimeText, launcherLabe
     opening_animation: oneOf('opening_animation', r.opening_animation, ANIMATIONS, D.opening_animation),
     animation_duration: num('animation_duration', r.animation_duration, D.animation_duration, 0, 2000),
     colors: {
-      primary: color('colors.primary', col.primary, brandColor || D.colors.primary),
-      primary_bg: color('colors.primary_bg', col.primary_bg, D.colors.primary_bg),
-      on_primary: col.on_primary == null || col.on_primary === 'auto' ? 'auto' : color('colors.on_primary', col.on_primary, 'auto'),
+      brand: color('colors.brand', col.brand, brandColor || D.colors.brand),
+      brand_bg: color('colors.brand_bg', col.brand_bg, D.colors.brand_bg),
+      on_brand: col.on_brand == null || col.on_brand === 'auto' ? 'auto' : color('colors.on_brand', col.on_brand, 'auto'),
       text: color('colors.text', col.text, D.colors.text)
     },
     font_family: r.font_family ? String(r.font_family) : null,
@@ -170,13 +170,13 @@ function luminance(color, probeParent) {
 }
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-/** 'auto' → readable text color (dark ink or white) on the primary color. */
-export function contrastOn(primary) {
-  const L = luminance(primary);
+/** 'auto' → readable text color (dark ink or white) on the brand color. */
+export function contrastOn(brand) {
+  const L = luminance(brand);
   return ratio(L, 1) >= ratio(L, 0.008) ? '#ffffff' : '#071437'; // 0.008 ≈ luminance of #071437
 }
 
-/** Primary used as text/icons on the chat box background: darkened toward `text` when too faint (< 3:1). */
-export function inkOn(primary, bg, text) {
-  return ratio(luminance(primary), luminance(bg)) >= 3 ? primary : `color-mix(in srgb, ${primary} 45%, ${text})`;
+/** Brand color used as text/icons on the chat box background: darkened toward `text` when too faint (< 3:1). */
+export function inkOn(brand, bg, text) {
+  return ratio(luminance(brand), luminance(bg)) >= 3 ? brand : `color-mix(in srgb, ${brand} 45%, ${text})`;
 }

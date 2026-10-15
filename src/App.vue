@@ -26,7 +26,7 @@ const current = computed(() => VIEWS[s.view] || HomeView);
 const viewKey = computed(() => s.view + ':' + (s.view === 'help' ? '' : typeof s.param === 'object' ? 'obj' : s.param));
 
 const ui = s.cfg.ui;
-const onPrimary = ui.colors.on_primary === 'auto' ? contrastOn(ui.colors.primary) : ui.colors.on_primary;
+const onBrand = ui.colors.on_brand === 'auto' ? contrastOn(ui.colors.brand) : ui.colors.on_brand;
 const [vert, horiz] = ui.chatbox_position.position.split('_'); // 'bottom', 'right'
 const rootClass = computed(() => [
   'pos-' + vert, 'pos-' + horiz, 'anim-' + ui.opening_animation,
@@ -36,7 +36,7 @@ const rootClass = computed(() => [
 const gx = 20 + (horiz === 'right' ? -ui.chatbox_position.adjust_x : ui.chatbox_position.adjust_x);
 const gy = 20 + (vert === 'bottom' ? -ui.chatbox_position.adjust_y : ui.chatbox_position.adjust_y);
 const rootStyle = {
-  '--b': ui.colors.primary, '--b-ink': inkOn(ui.colors.primary, ui.colors.primary_bg, ui.colors.text), '--bg': ui.colors.primary_bg, '--on-b': onPrimary, '--text': ui.colors.text,
+  '--b': ui.colors.brand, '--b-ink': inkOn(ui.colors.brand, ui.colors.brand_bg, ui.colors.text), '--bg': ui.colors.brand_bg, '--on-b': onBrand, '--text': ui.colors.text,
   '--pos': s.contained ? 'absolute' : 'fixed',
   '--gx': gx + 'px', '--gy': gy + 'px', '--ls': ui.chat_icon_size + 'px',
   '--lo': ui.chat_icon ? `calc(${gy}px + ${ui.chat_icon_size}px + 12px)` : gy + 'px',
