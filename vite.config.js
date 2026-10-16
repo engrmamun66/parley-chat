@@ -8,7 +8,8 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 export default defineConfig({
   plugins: [vue()],
   // local-dev-server loads /src/main.js from here (VITE_DEV_URL), so keep the port fixed.
-  server: { port: 5173, strictPort: true },
+  // 5199, not Vite's default 5173, so other Vite projects running on this machine don't clash.
+  server: { port: 5199, strictPort: true },
   define: {
     __PARLEY_VERSION__: JSON.stringify(pkg.version),
     'process.env.NODE_ENV': JSON.stringify('production'),

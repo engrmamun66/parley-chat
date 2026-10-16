@@ -8,7 +8,7 @@ dotenv.config({ path: path.join(ROOT, '.env') });
 
 const PORT = +process.env.PORT || 3000;
 const SOURCE = (process.env.WIDGET_SOURCE || 'auto').toLowerCase();
-const VITE_DEV_URL = (process.env.VITE_DEV_URL || 'http://localhost:5173').replace(/\/+$/, '');
+const VITE_DEV_URL = (process.env.VITE_DEV_URL || 'http://localhost:5199').replace(/\/+$/, '');
 const DIST = path.join(ROOT, '..', 'dist');
 
 const parley = {
@@ -22,7 +22,11 @@ let viteCheck = { at: 0, up: false };
 async function viteIsUp() {
   if (Date.now() - viteCheck.at < 3000) return viteCheck.up;
   let up = false;
-  try { up = (await fetch(VITE_DEV_URL + '/@vite/client', { signal: AbortSignal.timeout(400) })).ok; } catch (e) { /* not running */ }
+  try {
+    // Must be *this* project's Vite (another project could be on the same port): check the entry file.
+    const r = await fetch(VITE_DEV_URL + '/src/main.js', { signal: AbortSignal.timeout(600) });
+    up = r.ok && (await r.text()).includes('ParleyChat');
+  } catch (e) { /* not running */ }
   viteCheck = { at: Date.now(), up };
   return up;
 }

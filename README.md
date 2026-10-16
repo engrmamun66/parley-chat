@@ -9,7 +9,7 @@ The UI is a port of the reference widget in `roadmap-html/…/parley/ecomm/` (Ho
 ```bash
 npm install
 cp .env.example .env     # set VITE_API_BASE_URL / VITE_SOCKET_URL (or leave empty for demo mode)
-npm run dev              # Vite dev server on :5173 (serves src/ for live testing)
+npm run dev              # Vite dev server on :5199 (serves src/ for live testing)
 npm run build            # → dist/parley-live-chat.js
 ```
 
@@ -29,7 +29,7 @@ Which widget the pages load is set by `WIDGET_SOURCE` in `local-dev-server/.env`
 | Value | Loads | Use when |
 |---|---|---|
 | `auto` (default) | the Vite dev server if it's running, otherwise the built bundle | normal work |
-| `dev` | `http://localhost:5173/src/main.js` (`VITE_DEV_URL`) | testing changes live: run `npm run dev` in the project root and edits to `.vue` files hot-reload in the page |
+| `dev` | `http://localhost:5199/src/main.js` (`VITE_DEV_URL`) | testing changes live: run `npm run dev` in the project root and edits to `.vue` files hot-reload in the page |
 | `dist` | `dist/parley-live-chat.js` | checking the real build: run `npm run build` first |
 
 Every page also loads `local-dev-server/public/parley.chat.options.js` (sets `window.LLChatSettings`) before the widget; its values override the `.env` defaults, and edits apply on the next page refresh.
