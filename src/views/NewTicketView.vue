@@ -34,9 +34,11 @@ async function submit() {
     const t = await store.createTicket(fields, file.value);
     store.go('ticketDone', t.id);
   } catch (e) {
+    // Backend field names → form fields (message → body, order_id → orderId).
+    const FIELD = { message: 'body', order_id: 'orderId' };
     const srv = e && e.body && e.body.errors;
-    if (srv) Object.entries(srv).forEach(([k, v]) => { errors[k] = Array.isArray(v) ? v[0] : String(v); });
-    else store.toast('Couldn\'t submit the ticket — please try again.');
+    if (srv) Object.entries(srv).forEach(([k, v]) => { errors[FIELD[k] || k] = Array.isArray(v) ? v[0] : String(v); });
+    else store.toast((e && e.body && e.body.message) || 'Couldn\'t submit the ticket — please try again.');
   } finally { busy.value = false; }
 }
 function onFile() { const x = fileEl.value.files && fileEl.value.files[0]; if (x) file.value = x; fileEl.value.value = ''; }
@@ -58,10 +60,11 @@ const clear = (k) => { if (errors[k]) delete errors[k]; };
           </select><div v-if="errors.category" class="errmsg">{{ errors.category }}</div></div>
 
         <div class="field"><label for="pf-order">Order number <em>(optional)</em></label>
-          <input id="pf-order" v-model="f.orderId" class="inp" data-f="orderId" placeholder="e.g. HP-10482"></div>
+          <input id="pf-order" v-model="f.orderId" class="inp" :class="{ err: errors.orderId }" data-f="orderId" maxlength="80" placeholder="e.g. HP-10482" @input="clear('orderId')">
+          <div v-if="errors.orderId" class="errmsg">{{ errors.orderId }}</div></div>
 
         <div class="field"><label for="pf-subj">Subject</label>
-          <input id="pf-subj" v-model="f.subject" class="inp" :class="{ err: errors.subject }" data-f="subject" required maxlength="120" placeholder="A short summary" @input="clear('subject')">
+          <input id="pf-subj" v-model="f.subject" class="inp" :class="{ err: errors.subject }" data-f="subject" required maxlength="255" placeholder="A short summary" @input="clear('subject')">
           <div v-if="errors.subject" class="errmsg">{{ errors.subject }}</div></div>
 
         <div class="field"><label for="pf-body">Description</label>
@@ -77,10 +80,10 @@ const clear = (k) => { if (errors[k]) delete errors[k]; };
 
         <div class="two">
           <div class="field"><label for="pf-name">Name</label>
-            <input id="pf-name" v-model="f.name" class="inp" :class="{ err: errors.name }" data-f="name" required autocomplete="name" @input="clear('name')">
+            <input id="pf-name" v-model="f.name" class="inp" :class="{ err: errors.name }" data-f="name" required maxlength="160" autocomplete="name" @input="clear('name')">
             <div v-if="errors.name" class="errmsg">{{ errors.name }}</div></div>
           <div class="field"><label for="pf-email">Email</label>
-            <input id="pf-email" v-model="f.email" class="inp" :class="{ err: errors.email }" type="email" data-f="email" required autocomplete="email" @input="clear('email')">
+            <input id="pf-email" v-model="f.email" class="inp" :class="{ err: errors.email }" type="email" data-f="email" required maxlength="190" autocomplete="email" @input="clear('email')">
             <div v-if="errors.email" class="errmsg">{{ errors.email }}</div></div>
         </div>
         <button class="btn block" type="submit" :disabled="busy">{{ busy ? 'Submitting…' : 'Submit ticket' }}</button>

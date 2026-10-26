@@ -43,8 +43,8 @@ Edits to `.vue` files hot-swap in place. Edits to plain `.js` files (store, cons
 
 | Variable | Purpose |
 |---|---|
-| `VITE_API_BASE_URL` | Base URL of the widget REST API, e.g. `https://api.parley.chat/widget/v1`. **Empty → local demo mode**: no backend, data stays in `localStorage`, plus a canned bot reply. |
-| `VITE_SOCKET_URL` | WebSocket URL for real-time events, e.g. `wss://ws.parley.chat/widget`. Empty → the widget polls the REST API instead (every 4 s while the chat is open, slower in the background). |
+| `VITE_API_BASE_URL` | parley-backend API base including `/api/v1`, e.g. `http://127.0.0.1:8001/api/v1`. Set → tickets are created on the backend (see **Backend API**). **Empty → local demo mode**: no backend, data stays in `localStorage`, plus a canned bot reply. |
+| `VITE_SOCKET_URL` | WebSocket URL for real-time chat events. Not used yet: the backend has no chat endpoints so far (see **Real-time**). |
 
 These are baked in at build time. A host page can override both at runtime (see below).
 
@@ -163,32 +163,24 @@ src/
 
 To add a screen: create `views/XView.vue`, register it in `App.vue` (the `VIEWS` map), and navigate with `store.go('x', param)`.
 
-## Backend API (contract the widget expects)
+## Backend API
 
-Every request sends `X-Parley-Key: <publicKey>` and, after the session starts, `X-Parley-Visitor: <visitorId>`. Responses can be bare JSON or wrapped in `{ "data": … }`. Validation errors use `422 { "errors": { "field": ["message"] } }`; the ticket form shows them inline.
+Backend: `parley-backend`. Its API reference is `parley-backend/public/api-docs/API_DOCUMENTATION.md` (§8, chat & support widget).
 
-| Method & path | Body | Returns |
+Set `VITE_API_BASE_URL` to the backend's `/api/v1` base, e.g. `http://127.0.0.1:8001/api/v1`. Requests authenticate with the widget public key (`publicKey: 'pk_live_…'` in `LLChatSettings`), sent as `X-Public-Key`.
+
+| Widget feature | Backend endpoint | Status |
 |---|---|---|
-| `POST /sessions` | `{ visitor_id?, conversation_id?, page, device }` | `{ visitorId, conversationId, name, email, status, assignee, messages[], tickets?[], cursor? }` |
-| `GET /conversations/{id}/sync?cursor=` | — | `{ messages[], status, assignee, typing?, tickets?[], cursor }` (only changes since the cursor) |
-| `POST /conversations/{id}/messages` | `{ body }` or multipart `body` + `attachments[]` | message |
-| `POST /conversations/{id}/typing` | `{ text }` | — |
-| `POST /conversations/{id}/rating` | `{ rating }` | — |
-| `GET /conversations` | — | past conversations `[{ id, title, agent, status, at, lastMessage }]` |
-| `GET /conversations/{id}` | — | `{ id, agent, status, messages[] }` |
-| `POST /visitors/identify` | `{ name, email }` | — |
-| `POST /events/pageview` | `{ url, title, type, referrer }` | — |
-| `POST /events` | `{ name, meta }` | — |
-| `GET /tickets` · `GET /tickets/{id}` | — | `[ticket]` · ticket |
-| `POST /tickets` | `{ category, orderId, subject, body, name, email, conversation_id }` (multipart if there's an attachment) | ticket `{ id, key, status, subject, … }` |
-| `POST /tickets/{id}/replies` | `{ body }` | reply `{ id, body, at, from }` |
-| `GET /articles?q=` | — | `[{ id, group, title, body, read, author }]` |
-| `POST /articles/{id}/vote` | `{ vote: 'up' | 'down' }` | — |
+| Create ticket (New ticket form, "Raise a ticket" from chat) | `POST /widget/tickets` (JSON, or multipart when there's an attachment) | **Live** |
+| Ticket list / detail / replies | — | Local only: created tickets are kept in the visitor's browser |
+| Chat, help articles, visitor session | — | Local demo mode until endpoints exist |
 
-Message shape: `{ id, from: 'visitor'|'agent'|'bot'|'system', agent?, body, at, attachments?: [{ name, size, url }], action?: 'ticket' }`.
-Ticket status can be any string. The timeline maps it as: `open` → Submitted, `assigned` → Assigned, `in progress`/`pending`/`waiting` → In progress, `resolved`/`closed`/`done` → Resolved.
+Fields sent to `POST /widget/tickets`: `name`, `email`, `subject`, `message`, `category`, `order_id`, `project_key` (from `LLChatSettings.projectKey`, optional), `metadata` (`source`, `page_url`, `page_title`, `conversation_id`), `attachments[]`.
+422 validation errors show inline on the form fields (`message` → Description, `order_id` → Order number). 401/403/429 messages show as a toast.
 
 ## Real-time
+
+> Not active yet. Chat still runs in local demo mode because the backend has no chat endpoints. The transport below is ready for when they exist.
 
 When `VITE_SOCKET_URL` is set, the widget connects to:
 

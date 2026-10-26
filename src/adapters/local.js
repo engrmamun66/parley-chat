@@ -101,6 +101,11 @@ export function createLocalAdapter(cfg) {
       emit('ticket.created', { ticket: t });
       return delay(t);
     },
+    /** Store a ticket created elsewhere (e.g. by the backend) so it shows in Tickets after reloads. */
+    async saveTicket(t) {
+      mutate((s) => { s.tickets = s.tickets.filter((x) => x.id !== t.id).concat(t); if (t.name) s.name = t.name; if (t.email) s.email = t.email; });
+      return t;
+    },
     async replyTicket(id, body) {
       const r = { id: rid('r_'), from: 'visitor', body, at: isoNow() };
       mutate((s) => { const t = s.tickets.find((x) => x.id === id); if (t) { t.replies.push(r); t.updatedAt = r.at; } });

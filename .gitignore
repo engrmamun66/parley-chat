@@ -15,3 +15,5 @@ dist/
 # Playwright MCP scratch
 .playwright-mcp/
 personal-doc.md
+# Personal Claude notes
+CLAUDE.local.md

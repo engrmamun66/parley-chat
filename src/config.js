@@ -38,6 +38,7 @@ export function resolveConfig() {
     socketUrl: apiBaseUrl ? socketUrl : '',  // sockets only make sense against a real backend
     mode: apiBaseUrl ? 'api' : 'local',
     publicKey: win.publicKey || ds.publicKey || '',
+    projectKey: win.projectKey || ds.projectKey || null, // backend project to route tickets to (default: support project)
     pollInterval: Math.max(1500, +(win.pollInterval || 4000)),
     brandColor: ui.colors.brand,
     businessName,
